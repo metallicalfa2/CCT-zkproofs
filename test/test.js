@@ -7,10 +7,7 @@ const assert = require('assert')
 const BN = require('bn.js')
 const utils = require('../src/utils')
 const ec = utils.ec
-
-function print (el) {
-  console.log(el)
-}
+const { SumCheckProtocol } = require('../src/sumCheckProtocol')
 
 describe('Basic', function () {
   describe('utils', function () {
@@ -29,10 +26,31 @@ describe('Basic', function () {
           .cmp(pt.y.pow(new BN(2)).umod(ec.curve.p)) === 0
       )
     })
+    it('calculation boolean hypercube-v space', function () {
+      const v = 4
+      const array = Array(v + 1).fill(null)
+      let totalCount = 0
+      const printArray = function (array, i) {
+        if (array.length === i) {
+          totalCount++
+          console.log(array)
+          return
+        }
+        const arr = array
+        arr[i] = 0
+        printArray(arr, i + 1)
+
+        arr[i] = 1
+        printArray(arr, i + 1)
+      }
+
+      printArray(array, 0)
+      console.log(totalCount)
+    })
   })
 })
 
-describe('Sum check protocol', function () {
+describe.only('Sum check protocol', function () {
   it('calculating polynomial at various values', function () {
     // let g(x1, x2) = 2*x1^2 + x1*x2
     const g = function (x1, x2) {
@@ -41,5 +59,15 @@ describe('Sum check protocol', function () {
     // 2,3
     const value1 = g(2, 3)
     deepStrictEqual(value1.toString(10), '14')
+  })
+  it.only('SumCheckProtocol', function () {
+    // let g(x1, x2) = 2*x1^2 + x1*x2
+    const g = function (arr) {
+      return new BN(arr[0]).pow(new BN(2)).mul(new BN(2)).add(new BN(arr[0]).mul(new BN(arr[1])))
+    }
+
+    const protocol = SumCheckProtocol(g, 2, 1000)
+    const H = protocol.H()
+    deepStrictEqual(H.toString(10), '5')
   })
 })
