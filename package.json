@@ -1,0 +1,33 @@
+{
+  "name": "cct-zkproofs",
+  "version": "0.0.1",
+  "description": "test applications for zkproofs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rathishubham7/CCT-zkproofs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rathishubham7/CCT-zkproofs/issues"
+  },
+  "homepage": "https://github.com/rathishubham7/CCT-zkproofs#readme",
+  "dependencies": {
+    "assert": "^2.0.0",
+    "bn.js": "^5.1.3",
+    "elliptic": "^6.5.3",
+    "keccak": "^3.0.1",
+    "mocha": "^8.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.13.0",
+    "eslint-config-standard": "^16.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1"
+  }
+}
