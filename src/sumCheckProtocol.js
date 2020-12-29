@@ -30,19 +30,19 @@ const SumCheckProtocol = function (g, v, size) {
     return sum
   }
 
-  function siXi (i) {
+  function siXi (xindex) {
     // run 2^v-1 calculations
 
     const array = Array(v).fill(null)
-    const funcs = []
+    const funcs = [] // used later
+
     const sumRecursion = function (array, i) {
       if (array.length === i) {
+        const arr = JSON.parse(JSON.stringify(array)) // deep copy
         funcs.push(function (xvalue) {
-          const arr = array
-          arr[i - 1] = xvalue
+          arr[xindex - 1] = xvalue
           return g(arr)
         })
-        // sum = sum.add(g(array))
         return
       }
       const arr = array
@@ -52,7 +52,7 @@ const SumCheckProtocol = function (g, v, size) {
       arr[i] = 1
       sumRecursion(arr, i + 1)
     }
-    sumRecursion(array, 0)
+    sumRecursion(array, xindex)
 
     // because can't do math reductions for BN expressions
     return function (xvalue) {

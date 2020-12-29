@@ -11,29 +11,12 @@ const { SumCheckProtocol } = require('../src/sumCheckProtocol')
 
 describe('Basic', function () {
   describe('utils', function () {
-    it('should return random field element in the range of secp256k1 field order', function () {
-      assert(utils.randomScalar().cmp(ec.curve.p) !== 1)
-    })
-    it('should return random group element in the range of secp256k1 group order', function () {
-      const pt = utils.randomPoint()
-      // secp256k1 equation: y^3 = x^2 + 7
-      assert(
-        pt.x
-          .pow(new BN(3))
-          .umod(ec.curve.p)
-          .add(new BN(7))
-          .umod(ec.curve.p)
-          .cmp(pt.y.pow(new BN(2)).umod(ec.curve.p)) === 0
-      )
-    })
     it('calculation boolean hypercube-v space', function () {
       const v = 4
       const array = Array(v + 1).fill(null)
-      let totalCount = 0
+
       const printArray = function (array, i) {
         if (array.length === i) {
-          totalCount++
-          console.log(array)
           return
         }
         const arr = array
@@ -45,27 +28,28 @@ describe('Basic', function () {
       }
 
       printArray(array, 0)
-      console.log(totalCount)
     })
   })
 })
 
-describe.only('Sum check protocol', function () {
+describe('Sum check protocol', function () {
   /**
    * Sum check protocol
    * H = ∑∑∑∑∑∑...g(v1, v2, v3, ....)
    */
-  it.only('calculate H', function () {
-    // let g(x1, x2) = 2*x1^2 + x1*x2
-    const g = function (arr) {
-      return new BN(arr[0]).pow(new BN(2)).mul(new BN(2)).add(new BN(arr[0]).mul(new BN(arr[1])))
+  it('calculate H', function () {
+    // let g(x1, x2, x3) = 2*x1^2 + x1*x2 + x3
+    const g = function (x) {
+      const value = new BN(x[0]).pow(new BN(2)).mul(new BN(2)).add(new BN(x[0]).mul(new BN(x[1]))).add(new BN(x[2]))
+      // console.log(`X=${x}, g(X)=${value}`)
+      return value
     }
 
-    const protocol = SumCheckProtocol(g, 2, 1000)
-    // const H = protocol.H()
+    const protocol = SumCheckProtocol(g, 3, 1000)
+    const H = protocol.H()
     const s1x1 = protocol.siXi(1)
-    const test1 = s1x1(4)
-    console.log(test1)
-    // deepStrictEqual(H.toString(10), '5')
+    const g1Value = s1x1(4) // assuming that verifier has oracle access to g
+    deepStrictEqual(H.toString(10), '14')
+    deepStrictEqual(g1Value.toString(10), '138')
   })
 })
