@@ -66,11 +66,14 @@ describe('Sum check protocol', function () {
   })
 
   it('initial IP', function () {
-    // let g(x1, x2, x3) = 2*x1^2 + x1*x2 + x3 + x2*x4
-    const size = new BN(Math.floor(Math.random() * 1000)) // |F|
+    console.time('IP')
+    const size = new BN(Math.floor(Math.random() * 100000)) // |F|
     const v = 4 // v-variate polynomial
     const d = new BN(2)
     // console.log(`init IP, size=${size}, v=${v}`)
+
+    // let g(x1, x2, x3) = 2*x1^2 + x1*x2 + x3 + x2*x4
+    // x = [1,2,3,4] all non-null elements
     const g = function (x) {
       const value = new BN(x[0]).pow(new BN(2)).mul(new BN(2)).add(new BN(x[0]).mul(new BN(x[1]))).add(new BN(x[2])).add(new BN(x[1]).mul(new BN(3)))
       // console.log(`X=${x}, g(X)=${value}`)
@@ -138,5 +141,7 @@ describe('Sum check protocol', function () {
     // soundness errors
     // const soundnessError = new BN(v).mul(d).mul(new BN(10000)).div(size)
     // console.log(`soundness error 0.000${soundnessError.toString(10)}`)
+
+    console.timeEnd('IP')
   })
 })
