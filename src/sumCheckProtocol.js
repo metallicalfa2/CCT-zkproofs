@@ -16,7 +16,7 @@ const SumCheckProtocol = function (g, v, size) {
     const sumRecursion = function (array, i) {
       if (array.length === i) {
         // totalCount++
-        sum = sum.add(g(array))
+        sum = sum.add(g(array)).umod(size)
         return
       }
       const arr = array
@@ -30,10 +30,15 @@ const SumCheckProtocol = function (g, v, size) {
     return sum
   }
 
-  function siXi (xindex) {
+  function siXi (xindex, Rs) {
     // run 2^v-1 calculations
 
     const array = Array(v).fill(null)
+    Rs.map((el, index) => {
+      array[index] = el
+      return el
+    })
+    // console.log(array)
     const funcs = [] // used later
 
     const sumRecursion = function (array, i) {
@@ -58,7 +63,7 @@ const SumCheckProtocol = function (g, v, size) {
     return function (xvalue) {
       let sum = new BN(0)
       funcs.map(el => {
-        sum = sum.add(el(xvalue))
+        sum = sum.add(el(xvalue)).umod(size)
         return sum
       })
       return sum
