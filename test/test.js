@@ -52,7 +52,7 @@ describe('Sum check protocol', function () {
   })
   it('calculate siXi', function () {
     // let g(x1, x2, x3) = 2*x1^2 + x1*x2 + x3
-    const size = new BN(Math.floor(Math.random() * 1000))
+    const size = new BN(Math.floor(Math.random() * 1000)).add(new BN('138'))
     const g = function (x) {
       const value = new BN(x[0]).pow(new BN(2)).mul(new BN(2)).add(new BN(x[0]).mul(new BN(x[1]))).add(new BN(x[2]))
       // console.log(`X=${x}, g(X)=${value}`)
@@ -61,7 +61,7 @@ describe('Sum check protocol', function () {
 
     const protocol = SumCheckProtocol(g, 3, size)
     const s1x1 = protocol.siXi(1, [])
-    const g1Value = s1x1(4) // assuming that verifier has oracle access to g
+    const g1Value = s1x1(4).umod(size) // assuming that verifier has oracle access to g
     deepStrictEqual(g1Value.toString(10), '138')
   })
 
@@ -69,6 +69,7 @@ describe('Sum check protocol', function () {
     // let g(x1, x2, x3) = 2*x1^2 + x1*x2 + x3 + x2*x4
     const size = new BN(Math.floor(Math.random() * 1000)) // |F|
     const v = 4 // v-variate polynomial
+    const d = new BN(2)
     // console.log(`init IP, size=${size}, v=${v}`)
     const g = function (x) {
       const value = new BN(x[0]).pow(new BN(2)).mul(new BN(2)).add(new BN(x[0]).mul(new BN(x[1]))).add(new BN(x[2])).add(new BN(x[1]).mul(new BN(3)))
@@ -133,5 +134,9 @@ describe('Sum check protocol', function () {
     const finalOracle = g([r1, r2, r3, r4]).umod(size)
     const g4X4r4 = g4X4(r4).umod(size)
     deepStrictEqual(finalOracle.toString('hex'), g4X4r4.toString('hex'), 'finalOracle = g4X4r4')
+
+    // soundness errors
+    // const soundnessError = new BN(v).mul(d).mul(new BN(10000)).div(size)
+    // console.log(`soundness error 0.000${soundnessError.toString(10)}`)
   })
 })
