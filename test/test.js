@@ -51,23 +51,21 @@ describe('Basic', function () {
 })
 
 describe.only('Sum check protocol', function () {
-  it('calculating polynomial at various values', function () {
-    // let g(x1, x2) = 2*x1^2 + x1*x2
-    const g = function (x1, x2) {
-      return new BN(x1).pow(new BN(2)).mul(new BN(2)).add(new BN(x1).mul(new BN(x2)))
-    }
-    // 2,3
-    const value1 = g(2, 3)
-    deepStrictEqual(value1.toString(10), '14')
-  })
-  it.only('SumCheckProtocol', function () {
+  /**
+   * Sum check protocol
+   * H = ∑∑∑∑∑∑...g(v1, v2, v3, ....)
+   */
+  it.only('calculate H', function () {
     // let g(x1, x2) = 2*x1^2 + x1*x2
     const g = function (arr) {
       return new BN(arr[0]).pow(new BN(2)).mul(new BN(2)).add(new BN(arr[0]).mul(new BN(arr[1])))
     }
 
     const protocol = SumCheckProtocol(g, 2, 1000)
-    const H = protocol.H()
-    deepStrictEqual(H.toString(10), '5')
+    // const H = protocol.H()
+    const s1x1 = protocol.siXi(1)
+    const test1 = s1x1(4)
+    console.log(test1)
+    // deepStrictEqual(H.toString(10), '5')
   })
 })
