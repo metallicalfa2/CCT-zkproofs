@@ -47,9 +47,19 @@ describe('Sum check protocol', function () {
 
     const protocol = SumCheckProtocol(g, 3, 1000)
     const H = protocol.H()
+    deepStrictEqual(H.toString(10), '14')
+  })
+  it('calculate siXi', function () {
+    // let g(x1, x2, x3) = 2*x1^2 + x1*x2 + x3
+    const g = function (x) {
+      const value = new BN(x[0]).pow(new BN(2)).mul(new BN(2)).add(new BN(x[0]).mul(new BN(x[1]))).add(new BN(x[2]))
+      // console.log(`X=${x}, g(X)=${value}`)
+      return value
+    }
+
+    const protocol = SumCheckProtocol(g, 3, 1000)
     const s1x1 = protocol.siXi(1)
     const g1Value = s1x1(4) // assuming that verifier has oracle access to g
-    deepStrictEqual(H.toString(10), '14')
     deepStrictEqual(g1Value.toString(10), '138')
   })
 })
