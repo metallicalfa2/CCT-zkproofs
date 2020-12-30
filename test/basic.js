@@ -146,8 +146,7 @@ describe('Sum check protocol', function () {
   })
 })
 describe('#SAT problem', function () {
-  it.only('#SAT to sum check protocol', function () {
-    // console.log(and(1, 0), and(1, 1), or(1, 0), or(0, 0), not(1))
+  it('Phi to Psi', function () {
     // construction of XNOR gate
     // phi = a.b + a`.b`,  a`=not(a)
     // S=3 gates
@@ -186,5 +185,55 @@ describe('#SAT problem', function () {
       return or(exp1, exp2)
     }
     deepStrictEqual(psi([0, 1]).toString(10), '0', '[0,1]=0')
+  })
+  it.only('Sum check protocol', function () {
+    // phi = (a.b).c` + d.e
+    // S=5 gates
+    const phi = function (x) {
+      // basic gate construction
+      function and (a, b) {
+        return a === b && a === 1 ? 1 : 0
+      }
+      function or (a, b) {
+        return a === 1 || b === 1 ? 1 : 0
+      }
+      function not (a) {
+        return a === 1 ? 0 : 1
+      }
+      const exp1 = and(and(x[0], x[1]), not(x[2]))
+      const exp2 = and(x[3], x[4])
+      return or(exp1, exp2)
+    }
+    // add the recursion from SumCheckProtocol.H() to create the input<>output table
+    deepStrictEqual(phi([1, 1, 0, 1, 1]), 1, '[ 1, 1, 0, 1, 1 ]=1')
+
+    // convert to psi
+    // and -> x.y, or -> x+y - x.y, not -> 1-x
+    const psi = function (x) {
+      // transformation of gates into arithmetic circuits
+      function and (a, b) {
+        return new BN(a).mul(new BN(b)).umod(new BN(2))
+      }
+      function or (a, b) {
+        return new BN(a).add(new BN(b)).sub(and(a, b)).umod(new BN(2))
+      }
+      function not (a) {
+        return new BN(1).sub(new BN(a)).umod(new BN(2))
+      }
+      // copy the gates logic from phi function, and override and, or, not with arithmetic logic
+      const exp1 = and(and(x[0], x[1]), not(x[2]))
+      const exp2 = and(x[3], x[4])
+      return or(exp1, exp2)
+    }
+
+    // Sum check protocol
+    const size = new BN(Math.floor(Math.random() * 100000)) // |F|
+    const v = 5 // 5 variables
+    const g = function (x) {
+      return psi(x) // without reductions, easier to implement
+    }
+    const protocol = SumCheckProtocol(g, v, size)
+    const h = protocol.H()
+    deepStrictEqual(h.toString(10), '11')
   })
 })
