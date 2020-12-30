@@ -145,3 +145,46 @@ describe('Sum check protocol', function () {
     console.timeEnd('IP')
   })
 })
+describe('#SAT problem', function () {
+  it.only('#SAT to sum check protocol', function () {
+    // console.log(and(1, 0), and(1, 1), or(1, 0), or(0, 0), not(1))
+    // construction of XNOR gate
+    // phi = a.b + a`.b`,  a`=not(a)
+    // S=3 gates
+    const phi = function (x) {
+      // basic gate construction
+      function and (a, b) {
+        return a === b && a === 1 ? 1 : 0
+      }
+      function or (a, b) {
+        return a === 1 || b === 1 ? 1 : 0
+      }
+      function not (a) {
+        return a === 1 ? 0 : 1
+      }
+      const exp1 = and(x[0], x[1])
+      const exp2 = and(not(x[0]), not(x[1]))
+      return or(exp1, exp2)
+    }
+    deepStrictEqual(phi([0, 1]), 0, '[0,1]=0')
+
+    // convert to psi
+    // and -> x.y, or -> x+y - x.y, not -> 1-x
+    const psi = function (x) {
+      // transformation of gates into arithmetic circuits
+      function and (a, b) {
+        return new BN(a).mul(new BN(b)).umod(new BN(2))
+      }
+      function or (a, b) {
+        return new BN(a).add(new BN(b)).sub(and(a, b)).umod(new BN(2))
+      }
+      function not (a) {
+        return new BN(1).sub(new BN(a)).umod(new BN(2))
+      }
+      const exp1 = and(x[0], x[1])
+      const exp2 = and(not(x[0]), not(x[1]))
+      return or(exp1, exp2)
+    }
+    deepStrictEqual(psi([0, 1]).toString(10), '0', '[0,1]=0')
+  })
+})
