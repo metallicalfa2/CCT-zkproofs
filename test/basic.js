@@ -8,6 +8,7 @@ const BN = require('bn.js')
 const utils = require('../src/utils')
 const ec = utils.ec
 const { SumCheckProtocol } = require('../src/sumCheckProtocol')
+const { Z_ASCII } = require('zlib')
 
 describe('Basic', function () {
   describe('utils', function () {
@@ -145,6 +146,7 @@ describe('Sum check protocol', function () {
     console.timeEnd('IP')
   })
 })
+
 describe('#SAT problem', function () {
   it('Phi to Psi', function () {
     // construction of XNOR gate
@@ -186,7 +188,7 @@ describe('#SAT problem', function () {
     }
     deepStrictEqual(psi([0, 1]).toString(10), '0', '[0,1]=0')
   })
-  it.only('Sum check protocol', function () {
+  it('Sum check protocol', function () {
     // phi = (a.b).c` + d.e
     // S=5 gates
     const phi = function (x) {
@@ -230,10 +232,11 @@ describe('#SAT problem', function () {
     const size = new BN(Math.floor(Math.random() * 100000)) // |F|
     const v = 5 // 5 variables
     const g = function (x) {
-      return psi(x) // without reductions, easier to implement
+      return psi(x) // without reductions in coefficients
     }
     const protocol = SumCheckProtocol(g, v, size)
-    const h = protocol.H()
-    deepStrictEqual(h.toString(10), '11')
+    const transcript = protocol.generateTranscript()
+    console.log(transcript)
+    // deepStrictEqual(transcript.length, 5)
   })
 })
