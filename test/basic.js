@@ -261,22 +261,14 @@ describe('Efficient IP for matrix multiplication', function () {
     // console.log(`n=${n}, field=${field}`)
 
     let matrixA = Matrix(n, field)
-    matrixA.generateRandom()
-    // matrixA.print()
-
-    let matrixB = Matrix(n, field)
-    matrixB.generateRandom()
-    // matrixB.print()
-
-    let final = MatrixMultiplication(matrixA, matrixB, n, field)
-    final.init()
-    let domain = final.getDomain()
+    let domain = matrixA.returnDomain()
 
     let finalArrToCompare = []
+
     for (let i = 0; i < domain.length; i++) {
       let arr = []
       for (let j = 0; j < domain.length; j++) {
-        let interim = final.f_a_mle(domain[i], domain[j])
+        let interim = matrixA.mle(domain[i], domain[j])
         deepStrictEqual(interim, matrixA.value(domain[i], domain[j], 'binary'))
         arr.push(interim)
       }
