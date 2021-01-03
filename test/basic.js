@@ -10,7 +10,8 @@ const ec = utils.ec
 const { SumCheckProtocol } = require('../src/sumCheckProtocol')
 const { triangle } = require('../src/triangles')
 const { Z_ASCII } = require('zlib')
-const { Matrix, MatrixMultiplication } = require('../src/matMult')
+const { MatrixMultiplication } = require('../src/matMult')
+const { Matrix } = require('../src/matrix')
 
 describe('Basic', function () {
   describe('utils', function () {
