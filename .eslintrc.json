@@ -10,5 +10,6 @@
         "ecmaVersion": 12
     },
     "rules": {
+        "prefer-const": 0
     }
 }

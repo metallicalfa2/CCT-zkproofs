@@ -8,6 +8,7 @@ const BN = require('bn.js')
 const utils = require('../src/utils')
 const ec = utils.ec
 const { SumCheckProtocol } = require('../src/sumCheckProtocol')
+const { triangle } = require('../src/triangles')
 const { Z_ASCII } = require('zlib')
 
 describe('Basic', function () {
@@ -238,5 +239,14 @@ describe('#SAT problem', function () {
     const transcript = protocol.generateTranscript()
     console.log(transcript)
     // deepStrictEqual(transcript.length, 5)
+  })
+})
+
+describe.only('Triangles', function () {
+  it.only('#counting triangles', function () {
+    let random = Math.round(Math.random() * 100)
+    const graph = triangle(random)
+    let count = graph.countTriangles()
+    console.log(`Number of triangles in G(V=${random}, E=A) is ${count}`)
   })
 })
