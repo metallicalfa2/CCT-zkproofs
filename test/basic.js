@@ -254,10 +254,11 @@ describe('Triangles', function () {
   })
 })
 
-describe.only('Efficient IP for matrix multiplication', function () {
-  it('#should multiply matrices', function () {
-    let n = 5
-    let field = Math.round(Math.random() * 100)
+describe('Efficient IP for matrix multiplication', function () {
+  it('#should calculate MLE of matrix in correct way', function () {
+    let n = 20
+    let field = Math.round(50 + Math.random() * 100)
+    // console.log(`n=${n}, field=${field}`)
 
     let matrixA = Matrix(n, field)
     matrixA.generateRandom()
@@ -267,8 +268,19 @@ describe.only('Efficient IP for matrix multiplication', function () {
     matrixB.generateRandom()
     // matrixB.print()
 
-    let matrixC = MatrixMultiplication(matrixA, matrixB, n)
-    matrixC.init()
-    console.log()
+    let final = MatrixMultiplication(matrixA, matrixB, n, field)
+    final.init()
+    let domain = final.getDomain()
+
+    let finalArrToCompare = []
+    for (let i = 0; i < domain.length; i++) {
+      let arr = []
+      for (let j = 0; j < domain.length; j++) {
+        let interim = final.f_a_mle(domain[i], domain[j])
+        deepStrictEqual(interim, matrixA.value(domain[i], domain[j], 'binary'))
+        arr.push(interim)
+      }
+      finalArrToCompare.push(arr)
+    }
   })
 })

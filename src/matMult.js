@@ -1,6 +1,9 @@
 /* eslint-disable camelcase */
+
+// const BN = require('bn.js')
+
 // accepts a, b of types Matrix
-function MatrixMultiplication (A, B, n) {
+function MatrixMultiplication (A, B, n, field) {
   let domain = [] // in binary representation
   let ceiling = 0 // ceil(log(base2)n)
 
@@ -17,39 +20,50 @@ function MatrixMultiplication (A, B, n) {
     }
     createDomain('', 0)
   }
+
   function getDomain () {
     return domain
   }
   function f_a (a, b) {
-    return a.value(a, b, 'binary')
+    return A.value(a, b, 'binary')
   }
   function f_b (a, b) {
-    return b.value(a, b, 'binary')
+    return B.value(a, b, 'binary')
   }
   function f_a_mle (a, b) {
+    // assuming a, b were passed in binary
     function chi_w (wx, wy) {
       let w1 = wx.split('').map(x => parseInt(x, 2)) // values of x1, x2, x3, .... xlogn
       let w2 = wy.split('').map(x => parseInt(x, 2)) // values of y1, y2, y3, .... ylogn
 
       let Xis = a.split('').map(x => parseInt(x, 2))
       let Yis = b.split('').map(x => parseInt(x, 2))
+      // console.log(w1, w2, Xis, Yis)
 
       let product = 1
       for (let i = 0; i < w1.length; i++) {
-        product = product * (w1[i] * Xis[i] + (1 - Xis[i])(1 - w1[i]))
+        // console.log(1 - Xis[i], i)
+        product = product * (w1[i] * Xis[i] + (1 - Xis[i]) * (1 - w1[i]))
+        // console.log(product)
+        product = product % field
       }
       for (let i = 0; i < w2.length; i++) {
-        product = product * (w2[i] * Yis[i] + (1 - Yis[i])(1 - w2[i]))
+        product = product * (w2[i] * Yis[i] + (1 - Yis[i]) * (1 - w2[i]))
+        product = product % field
       }
+      // console.log(product, 'final')
       return product
     }
 
     let sum = 0
-    for (let i = 0; i < domain; i++) {
-      for (let j = 0; j < domain; j++) {
+    // console.log(domain)
+    for (let i = 0; i < domain.length; i++) {
+      for (let j = 0; j < domain.length; j++) {
         let f_a_w = f_a(domain[i], domain[j])
+        // console.log(f_a_w)
         let term1 = f_a_w * chi_w(domain[i], domain[j])
-        sum += term1
+        sum += term1 % field
+        // console.log(sum)
       }
     }
     return sum
@@ -64,7 +78,7 @@ function MatrixMultiplication (A, B, n) {
   }
 }
 
-function Matrix (n) {
+function Matrix (n, field) {
   let mat = []
   function generateRandom () {
     const A = []
@@ -74,7 +88,7 @@ function Matrix (n) {
         if (i === j) {
           arr.push(0)
         } else if (j > i) {
-          arr.push(Math.round(Math.random() * 100))
+          arr.push(Math.round(Math.random() * 100) % field)
         } else {
           arr.push(A[j][i])
         }
@@ -85,7 +99,7 @@ function Matrix (n) {
     return A
   }
   function value (a, b, type) {
-    if (a >= n || b >= n) return undefined
+    // if (a >= a || b >= n) return undefined
     let tempX = 0
     let tempY = 0
     if (type === 'binary') {
@@ -101,6 +115,7 @@ function Matrix (n) {
     for (let i = 0; i < n; i++) {
       console.log(...mat[i])
     }
+    console.log('\n')
   }
   function array () {
     return mat
