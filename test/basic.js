@@ -237,16 +237,18 @@ describe('#SAT problem', function () {
     }
     const protocol = SumCheckProtocol(g, v, size)
     const transcript = protocol.generateTranscript()
-    console.log(transcript)
-    // deepStrictEqual(transcript.length, 5)
+    // console.log(transcript)
+    deepStrictEqual(transcript.length, 5)
   })
 })
 
-describe.only('Triangles', function () {
-  it.only('#counting triangles', function () {
+describe('Triangles', function () {
+  it('#counting triangles', function () {
     let random = Math.round(Math.random() * 100)
     const graph = triangle(random)
-    let count = graph.countTriangles()
-    console.log(`Number of triangles in G(V=${random}, E=A) is ${count}`)
+    let { count, matrix } = graph.countTriangles()
+    let shortHandCount = graph.countTrianglesShorthand(matrix) // using trace
+    // console.log(`Number of triangles in G(V=${random}, E=A) is ${count}`, shortHandCount)
+    deepStrictEqual(count, shortHandCount)
   })
 })
