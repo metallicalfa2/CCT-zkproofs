@@ -48,7 +48,7 @@ function triangle (n) {
 
       createDomain(str + '1', i + 1)
     }
-    createDomain(str, 0)
+    createDomain(str, 0) // actual domain/6
     let delta = 0
 
     // consider one 3-tuple once
@@ -73,7 +73,7 @@ function triangle (n) {
       let numberOfRowsInA = a.length
       let numberOfColumnsInA = a[0].length
 
-      let numberOfRowsInB = b.length
+      // let numberOfRowsInB = b.length
       let numberOfColumnsInB = b[0].length
 
       let m = new Array(numberOfRowsInA)

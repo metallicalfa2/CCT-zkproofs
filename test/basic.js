@@ -10,6 +10,7 @@ const ec = utils.ec
 const { SumCheckProtocol } = require('../src/sumCheckProtocol')
 const { triangle } = require('../src/triangles')
 const { Z_ASCII } = require('zlib')
+const { Matrix, MatrixMultiplication } = require('../src/matMult')
 
 describe('Basic', function () {
   describe('utils', function () {
@@ -71,7 +72,7 @@ describe('Sum check protocol', function () {
     console.time('IP')
     const size = new BN(Math.floor(Math.random() * 100000)) // |F|
     const v = 4 // v-variate polynomial
-    const d = new BN(2)
+    // const d = new BN(2)
     // console.log(`init IP, size=${size}, v=${v}`)
 
     // let g(x1, x2, x3) = 2*x1^2 + x1*x2 + x3 + x2*x4
@@ -149,7 +150,7 @@ describe('Sum check protocol', function () {
 })
 
 describe('#SAT problem', function () {
-  it('Phi to Psi', function () {
+  it('should convert Phi to Psi', function () {
     // construction of XNOR gate
     // phi = a.b + a`.b`,  a`=not(a)
     // S=3 gates
@@ -189,7 +190,7 @@ describe('#SAT problem', function () {
     }
     deepStrictEqual(psi([0, 1]).toString(10), '0', '[0,1]=0')
   })
-  it('Sum check protocol', function () {
+  it('should generate sum check protocol transcript', function () {
     // phi = (a.b).c` + d.e
     // S=5 gates
     const phi = function (x) {
@@ -243,12 +244,31 @@ describe('#SAT problem', function () {
 })
 
 describe('Triangles', function () {
-  it('#counting triangles', function () {
+  it('#should counting triangles', function () {
     let random = Math.round(Math.random() * 100)
     const graph = triangle(random)
     let { count, matrix } = graph.countTriangles()
     let shortHandCount = graph.countTrianglesShorthand(matrix) // using trace
     // console.log(`Number of triangles in G(V=${random}, E=A) is ${count}`, shortHandCount)
     deepStrictEqual(count, shortHandCount)
+  })
+})
+
+describe.only('Efficient IP for matrix multiplication', function () {
+  it('#should multiply matrices', function () {
+    let n = 5
+    let field = Math.round(Math.random() * 100)
+
+    let matrixA = Matrix(n, field)
+    matrixA.generateRandom()
+    // matrixA.print()
+
+    let matrixB = Matrix(n, field)
+    matrixB.generateRandom()
+    // matrixB.print()
+
+    let matrixC = MatrixMultiplication(matrixA, matrixB, n)
+    matrixC.init()
+    console.log()
   })
 })
